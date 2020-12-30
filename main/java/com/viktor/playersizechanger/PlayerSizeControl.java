@@ -1,12 +1,9 @@
 package com.viktor.playersizechanger;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -15,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Map;
 
 public class PlayerSizeControl {
-    private float sizemultiplier = 0.5f;
+    private float sizemultiplier = 2.5f;
 
     @SubscribeEvent
     public void changePlayerSizeOnTick(TickEvent.PlayerTickEvent event){
@@ -40,13 +37,14 @@ public class PlayerSizeControl {
     }
 
     @SubscribeEvent
-    public void onRenderTick(RenderPlayerEvent.Pre event){
-        GlStateManager.scalef(sizemultiplier, sizemultiplier ,sizemultiplier);
+    public void onPlayerRenderPre(RenderPlayerEvent.Pre event){
+        event.getMatrixStack().push();
+        event.getMatrixStack().scale(sizemultiplier, sizemultiplier, sizemultiplier);
     }
 
     @SubscribeEvent
-    public void onRenderTick(RenderPlayerEvent.Post event){
-        GlStateManager.scalef(1 / sizemultiplier,1 / sizemultiplier ,1 / sizemultiplier);
+    public void onPlayerRenderPost(RenderPlayerEvent.Post event){
+        event.getMatrixStack().pop();
     }
 
 }
